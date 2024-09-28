@@ -4,20 +4,19 @@ import (
 	"log"
 	"net/http"
 	"webapp/migrations"
+	"webapp/routes"
 
 	"github.com/gorilla/mux"
 )
-
-func createProduct() {
-
-}
 
 func main() {
 
 	dsn := "root:PythonisSucks98@#@tcp(127.0.0.1:3306)/webapp_go?charset=utf8mb4&parseTime=True&loc=Local"
 
-	if err := migrations.Migrate(dsn); err != nil {
-		log.Fatalf("Migration failed: %v", err)
+	db, err := migrations.Migrate(dsn)
+
+	if err != nil {
+		panic(err)
 	}
 
 	log.Println("Application started successfully")
@@ -25,7 +24,8 @@ func main() {
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/product/create", createProduct()).Methods("POST")
-	http.ListenAndServe(":8080", nil)
+	routes.RegisterRoutes(r, db)
+
+	log.Fatal(http.ListenAndServe(":8080", r))
 
 }
