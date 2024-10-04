@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
-	"webapp/migrations"
+	"webapp/database"
 	"webapp/routes"
 
 	"github.com/gorilla/mux"
@@ -13,7 +13,7 @@ func main() {
 
 	dsn := "root:PythonisSucks98@#@tcp(127.0.0.1:3306)/webapp_go?charset=utf8mb4&parseTime=True&loc=Local"
 
-	db, err := migrations.Migrate(dsn)
+	db, err := database.Migrate(dsn)
 
 	if err != nil {
 		panic(err)

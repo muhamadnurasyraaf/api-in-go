@@ -1,16 +1,19 @@
-package migrations
+package database
 
 import (
 	"log"
 	"webapp/models"
 
+	_ "github.com/golang-migrate/migrate/v4/database/mysql"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 func Migrate(dsn string) (*gorm.DB, error) {
 
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
 
 	if err != nil {
 		return nil, err
