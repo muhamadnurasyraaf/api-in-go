@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
+	"webapp/auth"
 	"webapp/models"
 
 	"golang.org/x/crypto/bcrypt"
@@ -27,13 +28,18 @@ func CreateUser(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
 
 	user := models.User{Username: username, Password: hashedPassword}
 
+	token, errJwt := auth.GenerateJWT(username)
+
+	if errJwt != nil {
+		http.Error(w, "Failed to generate token", http.StatusInternalServerError)
+	}
 	if err := db.Create(&user).Error; err != nil {
 		http.Error(w, "Failed to create user", http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]string{"message": "User created successfully"})
+	json.NewEncoder(w).Encode(map[string]string{"message": "User created successfully", "token": token})
 }
 
 func hashPassword(password string) (string, error) {

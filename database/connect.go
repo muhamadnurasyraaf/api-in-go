@@ -29,7 +29,6 @@ func initDB(dsn string) (*gorm.DB, error) {
 	return db, nil
 }
 
-// autoMigrateTables applies migrations to the tables.
 func autoMigrateTables(db *gorm.DB) error {
 	for _, model := range tables {
 		if err := db.AutoMigrate(model); err != nil {
@@ -52,7 +51,6 @@ func dropTables(db *gorm.DB) error {
 	return nil
 }
 
-// Migrate handles the migration process without dropping existing tables.
 func Migrate(dsn string) (*gorm.DB, error) {
 	db, err := initDB(dsn)
 	if err != nil {
